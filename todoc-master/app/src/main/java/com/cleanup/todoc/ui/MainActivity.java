@@ -15,16 +15,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cleanup.todoc.R;
+import com.cleanup.todoc.injection.ViewModelFactory;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>Home activity of the application which is displayed when the user opens the app.</p>
@@ -41,13 +45,14 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     /**
      * List of all current tasks of the application
      */
+
     @NonNull
-    private final ArrayList<Task> tasks = new ArrayList<>();
+    private ArrayList<Task> latestTasks = new ArrayList<>();
 
     /**
      * The adapter which handles the list of tasks
      */
-    private final TasksAdapter adapter = new TasksAdapter(tasks, this);
+    private final TasksAdapter adapter = new TasksAdapter(new ArrayList<>(), this);
 
     /**
      * The sort method to be used to display tasks
@@ -89,6 +94,9 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @NonNull
     private TextView lblNoTasks;
 
+    private TodocViewModel todocViewModel;
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,8 +115,34 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                 showAddTaskDialog();
             }
         });
+        configureViewModel();
+        getTasks();
+
+    }
+    // -------------------
+    //DATA
+    // -------------------
+
+    private void configureViewModel(){
+        this.todocViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance(this)).get(TodocViewModel.class);
+        this.todocViewModel.init();
     }
 
+    /*private void getProjects(){
+        LiveData<Project> projectLiveData = todocViewModel.getProjects();
+        if (projectLiveData != null){
+            projectLiveData.observe(this,this::updateProjects);
+        }
+    }*/
+
+    private void getTasks(){
+        this.todocViewModel.getTasks().observe(this,this::updateTasks);
+    }
+
+
+    // -------------------
+    //UI
+    // -------------------
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.actions, menu);
@@ -129,15 +163,15 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             sortMethod = SortMethod.RECENT_FIRST;
         }
 
-        updateTasks();
+        updateTasks(latestTasks);
 
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onDeleteTask(Task task) {
-        tasks.remove(task);
-        updateTasks();
+        todocViewModel.deleteTask(task);
+
     }
 
     /**
@@ -209,14 +243,13 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * @param task the task to be added to the list
      */
     private void addTask(@NonNull Task task) {
-        tasks.add(task);
-        updateTasks();
+        todocViewModel.createTask(task);
     }
 
     /**
      * Updates the list of tasks in the UI
      */
-    private void updateTasks() {
+    private void updateTasks(List<Task> tasks) {
         if (tasks.size() == 0) {
             lblNoTasks.setVisibility(View.VISIBLE);
             listTasks.setVisibility(View.GONE);
@@ -239,6 +272,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
             }
             adapter.updateTasks(tasks);
+            latestTasks = new ArrayList<>(tasks);
         }
     }
 
