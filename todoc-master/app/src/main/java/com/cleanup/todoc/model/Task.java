@@ -14,9 +14,9 @@ import java.util.Comparator;
  *
  * @author Gaëtan HERFRAY
  */
-@Entity(foreignKeys = @ForeignKey(entity = Project.class,
+@Entity(tableName = "Task",
+        foreignKeys = @ForeignKey(entity = Project.class,
         parentColumns = "id",
-
         childColumns = "projectId"))
 
 public class Task {
@@ -29,6 +29,7 @@ public class Task {
     /**
      * The unique identifier of the project associated to the task
      */
+
     private long projectId;
 
     public long getProjectId() {

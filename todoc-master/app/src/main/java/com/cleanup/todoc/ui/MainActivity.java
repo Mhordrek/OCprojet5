@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     /**
      * List of all projects available in the application
      */
-    private final Project[] allProjects = Project.getAllProjects();
+    private Project[] allProjects = Project.getAllProjects();
 
     /**
      * List of all current tasks of the application
@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             }
         });
         configureViewModel();
+        getProjects();
         getTasks();
 
     }
@@ -128,12 +129,11 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         this.todocViewModel.init();
     }
 
-    /*private void getProjects(){
-        LiveData<Project> projectLiveData = todocViewModel.getProjects();
-        if (projectLiveData != null){
-            projectLiveData.observe(this,this::updateProjects);
-        }
-    }*/
+    private void getProjects(){this.todocViewModel.getProjects().observe(this,this::updateProjects); }
+
+    private void updateProjects(List<Project> projects) {
+        allProjects = projects.toArray(new Project[0]);
+    }
 
     private void getTasks(){
         this.todocViewModel.getTasks().observe(this,this::updateTasks);
