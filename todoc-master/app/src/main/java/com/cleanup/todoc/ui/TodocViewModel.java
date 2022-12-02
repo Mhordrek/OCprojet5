@@ -40,6 +40,8 @@ public class TodocViewModel extends ViewModel {
 
     public LiveData<List<Task>> getTasks(){return  taskDataSource.getTasks();}
 
+    public void updateTasks(){taskDataSource.getTasks().getValue();}
+
     public void createTask(Task task){
         executor.execute(()-> {
             taskDataSource.insertTask(task);

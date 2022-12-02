@@ -42,12 +42,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      */
     private Project[] allProjects = Project.getAllProjects();
 
-    /**
-     * List of all current tasks of the application
-     */
-
-    @NonNull
-    private ArrayList<Task> latestTasks = new ArrayList<>();
 
     /**
      * The adapter which handles the list of tasks
@@ -163,7 +157,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             sortMethod = SortMethod.RECENT_FIRST;
         }
 
-        updateTasks(latestTasks);
+        this.todocViewModel.getTasks().removeObservers(this);
+        getTasks();
 
         return super.onOptionsItemSelected(item);
     }
@@ -272,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
             }
             adapter.updateTasks(tasks);
-            latestTasks = new ArrayList<>(tasks);
+
         }
     }
 
