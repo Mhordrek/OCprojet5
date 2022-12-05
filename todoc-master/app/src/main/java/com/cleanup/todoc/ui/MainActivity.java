@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     /**
      * List of all projects available in the application
      */
-    private Project[] allProjects = Project.getAllProjects();
+    private Project[] allProjects;
 
 
     /**

@@ -15,5 +15,4 @@ public class ProjectDataRepository {
 
     public LiveData<List<Project>> getProjects(){return this.projectDao.getProjects();}
 
-    public int deleteProject(Project project){return this.projectDao.deleteProject(project);}
 }

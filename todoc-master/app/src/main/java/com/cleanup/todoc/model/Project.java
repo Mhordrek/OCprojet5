@@ -52,7 +52,7 @@ public class Project {
      * @return all the projects of the application
      */
     @NonNull
-    public static Project[] getAllProjects() {
+    public static Project[] getInitialProjects() {
         return new Project[]{
                 new Project(1L, "Projet Tartampion", 0xFFEADAD1),
                 new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
@@ -69,7 +69,7 @@ public class Project {
      */
     @Nullable
     public static Project getProjectById(long id) {
-        for (Project project : getAllProjects()) {
+        for (Project project : getInitialProjects()) {
             if (project.id == id)
                 return project;
         }

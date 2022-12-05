@@ -36,11 +36,7 @@ public class TodocViewModel extends ViewModel {
 
     public LiveData<List<Project>> getProjects(){return projectDataSource.getProjects();}
 
-    public void deleteProject(Project project){executor.execute(()-> projectDataSource.deleteProject(project));}
-
     public LiveData<List<Task>> getTasks(){return  taskDataSource.getTasks();}
-
-    public void updateTasks(){taskDataSource.getTasks().getValue();}
 
     public void createTask(Task task){
         executor.execute(()-> {
